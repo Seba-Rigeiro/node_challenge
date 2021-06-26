@@ -63,7 +63,7 @@ module.exports = {
     edit : (req , res ) => {
         const { id } = req.params
         const { name, age, weight, story, image } =  req.body
-        console.log (req.body)
+        
         db.Character.findByPk(id)
         .then(character => {
             
@@ -96,16 +96,26 @@ module.exports = {
     },
 
     detail : (req , res ) => {
-        db.Character.findByPk(req.params.id)
-            .then(characterDetail => {
+       Promise.all([ 
+        db.Character.findByPk(req.params.id),
+        db.Character_Movie.findAll({
+            attributes: ['movie_id'],
+            where: {
+                character_id: req.params.id
+            }
+        })
+    ])
+            .then(([characterDetail, characterMovies]) => {
                 res
                     .status(200)
                     .json ({
-                        data: characterDetail,
+                        Character: characterDetail,
+                        CharacterMovies: characterMovies ,
                         status: 'success'
                 })
             })
             .catch(error => {
+                console.log (error)
                 res
                     .status(500)
                     .json ({
