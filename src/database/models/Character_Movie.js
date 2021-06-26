@@ -5,21 +5,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: DataTypes.INTEGER
         },
-        name: {
-            type: DataTypes.STRING
+        character_id: {
+            type: DataTypes.INTEGER
         },
-        age: {
-            type: DataTypes.STRING
-        },
-        weight: {
-            type: DataTypes.NUMBER
-        },
-        story: {
-            type: DataTypes.STRING
-        },                
-        image: {
-            type: DataTypes.STRING ,
-        },
+        movie_id: {
+            type: DataTypes.INTEGER
+        }
     },   
     {
         tableName: 'character_movie',
