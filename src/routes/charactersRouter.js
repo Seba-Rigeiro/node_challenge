@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const path = require ('path')
 const charactersController = require ('../controllers/charactersController')
 
 // Rutas creacion de personajes
@@ -19,7 +18,6 @@ router.delete('/:id' , charactersController.delete );
 
 // Ruta detalle de personajes 
 router.get('/:id' , charactersController.detail);
-router.get('/platform/:id' , );
 
 
 module.exports = router;
