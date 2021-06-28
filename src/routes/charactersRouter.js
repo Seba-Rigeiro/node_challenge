@@ -7,7 +7,7 @@ router.get('/create' , );
 router.post('/' , charactersController.create);
 
 // Ruta para listar personajes
-router.get('/?' , charactersController.search);
+router.get('/search' , charactersController.search);
 router.get('/' , charactersController.index);
 
 // Rutas para editar personaje
