@@ -1,4 +1,5 @@
 const db = require('../database/models')
+const { Op, } = require('sequelize')
 
 module.exports = {
 
@@ -148,5 +149,21 @@ module.exports = {
             }) 
     
     },
-                
+
+    search: (req,res) => {
+       
+         const characters = db.Character.findAll ({
+            where: {
+                [Op.or]: [
+                {name: { [Op.like]: "%" + req.query.name + "%"} || ''},
+                {age: { [Op.eq]: [req.query.age]} || ''},
+                {weight: { [Op.eq]: [req.query.weight]} || ''}
+                ]
+            }
+        }).then ((characters) => {
+                                     
+                res.status(200).json(characters)
+        })
+    }            
+
 }
