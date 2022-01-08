@@ -1,5 +1,6 @@
 const db = require('../database/models')
 const { Op, } = require('sequelize')
+const { validationResult } = require ('express-validator');
 
 module.exports = {
 
@@ -26,26 +27,34 @@ module.exports = {
     },
 
     create: (req,res) => {
-        const { name, age, weight, story, image } = req.body
-        console.log (req.body)
-        db.Character.create ({
-            name, 
-            age, 
-            weight, 
-            story, 
-            image
-        })
-        .then(character => {
-            res.status(200).send ({character})
-        })
-        .catch(error => {
-            res
-                .status(500)
-                .json ({
-                    status: 'error',
-                    error: error
+        let errors = validationResult(req);
+        
+        if (errors.isEmpty()){
+
+            const { name, age, weight, story, image } = req.body
+            console.log (req.body)
+            db.Character.create ({
+                name, 
+                age, 
+                weight, 
+                story, 
+                image
             })
-        }) 
+            .then(character => {
+                res.status(200).send ({character})
+            })
+            .catch(error => {
+                res
+                    .status(500)
+                    .json ({
+                        status: 'error',
+                        error: error
+                })
+            })
+        } else {
+            res.status(500)
+               .json(errors.mapped())
+        }     
     },
 
     editForm : (req , res ) => {
@@ -62,37 +71,45 @@ module.exports = {
     },
 
     edit : (req , res ) => {
-        const { id } = req.params
-        const { name, age, weight, story, image } =  req.body
+        let errors = validationResult(req);
         
-        db.Character.findByPk(id)
-        .then(character => {
+        if (errors.isEmpty()){
             
-            db.Character.update({
-                name, 
-                age, 
-                weight, 
-                story, 
-                image
-            },
+            const { id } = req.params
+            const { name, age, weight, story, image } =  req.body
+            
+            db.Character.findByPk(id)
+            .then(character => {
+                
+                db.Character.update({
+                    name, 
+                    age, 
+                    weight, 
+                    story, 
+                    image
+                },
 
-            {
-                where: { id }
-            })
-    
-            .then(() => {
-                res.status(200).send ({character})
-            })
-            
-            .catch(error => {
-                res
-                    .status(500)
-                    .json ({
-                        status: 'error',
-                        error: error
+                {
+                    where: { id }
                 })
-            }) 
-        })    
+        
+                .then(() => {
+                    res.status(200).send ({character})
+                })
+                
+                .catch(error => {
+                    res
+                        .status(500)
+                        .json ({
+                            status: 'error',
+                            error: error
+                    })
+                }) 
+            })
+        } else {
+            res.status(500)
+            .json(errors.mapped())
+        }        
                     
     },
 

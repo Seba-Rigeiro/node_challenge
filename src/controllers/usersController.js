@@ -1,11 +1,14 @@
 const db = require('../database/models');
 const bcrypt = require ('bcryptjs')
+const { validationResult } = require ('express-validator');
 const jwt = require ('jsonwebtoken')
 
 module.exports = {
 
     register : (req , res) => {
-        
+        let errors = validationResult(req);
+        // Si no hay errores,busca el usuario por email
+        if (errors.isEmpty()){
         let passwordHash = bcrypt.hashSync(req.body.password, 10)    
         
         db.User.findOne({
@@ -44,6 +47,10 @@ module.exports = {
                             .json(err))
                 }
             })
+        } else {
+            res.status(500)
+               .json(errors.mapped())
+        }    
     },
     login:(req, res) => {
         
